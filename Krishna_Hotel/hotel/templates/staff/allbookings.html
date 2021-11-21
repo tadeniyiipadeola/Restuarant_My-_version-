@@ -1,0 +1,36 @@
+{% extends 'basic.html' %}
+{% block title %}All Bookings
+{% endblock title %}
+{% block body %}
+<h3 class="text-center  text-success">All Reservation </h3>
+<table class="table">
+    <thead>
+        <th>User</th>
+        <th>Room</th>
+        <th>Location</th>
+        <th>Person</th>
+        <th>Check in</th>
+        <th>Check out</th>
+        <th>Price</th>
+        <th>Action</th>
+    </thead>
+    {% for each_booking in bookings %}
+    <tr>
+        <td>{{each_booking.guest.username}}</td>
+        <td>{{each_booking.room.roomnumber}}</td>
+        <td>{{each_booking.room.hotel.location}}</td>
+        <td>{{each_booking.room.capacity}}</td>
+        <td>{{each_booking.check_in}}</td>
+        <td>{{each_booking.check_out}}</td>
+        <td>{{each_booking.room.price}}</td>
+        <td colspan="2">
+            <a href="/staff/panel/edit-room?roomid={{each_room.id}}"><Button class="btn btn-danger">Delete</Button></a>
+            <a href="/staff/panel/view-room?roomid={{each_room.id}}"><Button class="btn btn-primary">View</Button></a>
+        </td>
+
+    </tr>
+    {% endfor %}
+
+
+</table>
+{% endblock body %}

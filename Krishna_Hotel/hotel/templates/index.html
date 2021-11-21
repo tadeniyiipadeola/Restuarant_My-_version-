@@ -1,0 +1,158 @@
+    {% extends 'basic.html' %}
+    {% block title %}German Resturant
+    {% endblock title %}
+    {% block body %}
+     <!--Booking Section starts here-->
+    <section>
+        <div class="container-fluid py-5 px-5 ">
+            <form action="" method="POST">
+            {% csrf_token %}
+            <div class="row justify-content-center py-5 bg-light">
+                <div class="col-lg-4">
+                    <label for="">Location</label>
+                    <select class="form-control" name="search_location" id="roomstatus">
+                        <!--Hotel id and location-->
+                        <option>Location</option>
+                        {% for each_location,each_hotel_id in all_location %}
+                            
+                            <option value={{each_hotel_id}}>{{each_location}}</option>
+                        {% endfor %}    
+
+                        
+                            
+                    </select>
+                </div>
+                {%load app_tags%}
+                <div class="col-lg-2">
+                    <label for="">Check in</label>
+                    <input class="form-control mr-sm-2" type="date" placeholder="Check in" name="cin" min={%todays_date%} max={% max_date %} aria-label="Search" required="True">
+                </div>
+                <div class="col-lg-2">
+                    <label for="">Check Out</label>
+                    <input class="form-control mr-sm-2" type="date" placeholder="Check out" name="cout" min={%tommorow%} max={% max_date%} aria-label="Search" required="True">
+                </div>
+                <div class="col-lg-2">
+                    <label for="">Person</label>
+                    <input class="form-control mr-sm-2" type="number" placeholder="Person" name="capacity" aria-label="Search" required="True">
+                </div>
+                <div class="col-lg-2">
+
+                    <input type="submit" value="Check Availabilty" class="form-control mr-sm-2 btn btn-primary my-4" style="position: relative;top: 7px;">
+                </div>
+                {% if rooms %}
+                <p class="text-center text-success">Tables Available</p>
+                {% endif %}
+                
+            </div>
+            </form>
+
+        </div>
+    </section>
+    <!--Booking Section ends here-->
+    <!--Fetched reults appear here-->
+    <div class="container-fluid px-0 mx-aut">
+        {% if rooms %}
+           <table class="table">
+               <thead class="o">
+                <th>Type</th>
+                <th>Location</th>
+                <th>Person</th>
+                <th>price</th>
+                <th>Action</th>
+            </thead>
+            {% for r in rooms %}
+                <tr class="">
+                <td>{{ r.get_room_type_display }}</td>
+                <td>{{ r.hotel.location }}</td>
+                <td>{{ r.capacity }}</td>
+                <td>{{ r.price }}</td>
+                
+                <td><a href="/user/book-room?roomid={{r.id}}"><button class="btn btn-warning">Reserve Now</button></a></td>
+                </tr>
+            {% endfor %}
+            
+           </table> 
+        {% endif %}
+    </div>
+    <!--Fetched results ends here-->
+
+
+    <h3 class="text-center text-dark">Party Sizes</h3>
+
+    <!--Room tables starts here-->
+    <div class="container-fluid px-0" style="border:1px solid red">
+
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th class="text-center">Information</th>
+                    <th class="text-center">View</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="text-center">
+                        <!--Room details-->
+                        <h1>Couples</h1>
+                        <p>Price:$10 reservation fee</p>
+
+                        <p>party size :2-4 </p>
+                        <p>Capacity :Max person 4</p>
+
+                        <p>Services :Wifi,valet</p>
+                        <p> Views :Sea View</p>
+                    </td>
+                    <td class="text-center">
+                        <!--Room Images-->
+                        <img src="https://media.istockphoto.com/photos/romantic-evening-picture-id649672132?k=20&m=649672132&s=612x612&w=0&h=8-BY5q_zcMdkvgYi0kY2d1rDgO6MwrGdJ08pEpCsPTQ=" alt="" class="img-fluid pt-4">
+                    </td>
+
+                </tr>
+                <tr>
+                    <td class="text-center">
+                        <!--Room details-->
+                        <h1>Medium</h1>
+                        <p>Price:$15 reservation fee</p>
+
+                        <p>party size :4-6</p>
+                        <p>Capacity :Max person 6</p>
+
+                        <p>Services :Wifi,valet</p>
+                        <p> Views :Sea View</p>
+                    </td>
+                    <td class="text-center">
+                        <!--Table Images-->
+                        <img src="https://www.eatright.org/-/media/eatrightimages/health/weightloss/eatingout/7tipsforhealthydiningout.jpg"
+                            alt="" class="img-fluid pt-4">
+                    </td>
+
+                </tr>
+                <tr>
+                    <td class="text-center">
+                        <!--Table details-->
+                        <h1>Large</h1>
+                        <p>Price:$30 reservation fee</p>
+
+                        <p>Size :6-12</p>
+                        <p>Capacity :Max person 12</p>
+
+                        <p>Services :Wifi,valet</p>
+                        <p> Views :Sea View</p>
+                    </td>
+                    <td class="text-center">
+                        <!--Room Images-->
+                        <img src="https://imagesvc.meredithcorp.io/v3/mm/image?url=https%3A%2F%2Fstatic.onecms.io%2Fwp-content%2Fuploads%2Fsites%2F9%2F2017%2F07%2Fgroup-dinner-restaurant-blog0717-2000.jpg&q=85"
+                            alt="" class="img-fluid pt-4">
+                    </td>
+
+                </tr>
+
+            </tbody>
+        </table>
+    </div>
+    <!--Roo tables ends here-->
+
+    
+    {% endblock body %}
+   
+   
