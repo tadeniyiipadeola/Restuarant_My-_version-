@@ -55,11 +55,10 @@ def contactpage(request):
 #user sign up
 def user_sign_up(request):
     if request.method =="POST":
-        first_name = request.POST['first_name']
-        last_name = request.POST['last_name']
+        first_name = request.POST['firstname']
+        last_name = request.POST['lastname']
         username = request.POST['username']
         email = request.POST['email']
-        phone = request.POST['phone']
         
         password1 = request.POST['password1']
         password2 = request.POST['password2']
@@ -81,7 +80,7 @@ def user_sign_up(request):
         account.username = username
         account.email = email
         account.password = password1
-        account.is_staff = True
+        account.is_staff = False
         account.save()
 
 
@@ -96,9 +95,11 @@ def user_sign_up(request):
     return HttpResponse('Access Denied')
 #staff sign up
 def staff_sign_up(request):
+    if request.user.is_authenticated and request.user.is_staff:
+        return redirect("staffpanel")
     if request.method =="POST":
         user_name = request.POST['username']
-        
+        email = request.POST['email']
         password1 = request.POST['password1']
         password2 = request.POST['password2']
 
@@ -112,7 +113,7 @@ def staff_sign_up(request):
         except:
             pass
         
-        new_user = Account.objects.create_user(username=user_name,password=password1)
+        new_user = Account.objects.create_user(username=user_name, email= email, password=password1)
         new_user.is_superuser=False
         new_user.is_staff=True
         new_user.save()
@@ -123,27 +124,35 @@ def staff_sign_up(request):
         return HttpResponse('Access Denied')
 #user login and signup page
 def user_log_sign_page(request):
+    user = request.user
+    if user.is_authenticated:
+        return redirect("viewApp")
+
     if request.method == 'POST':
-        email = request.POST['email']
+        username = request.POST['username']
         password = request.POST['pswd']
 
-        user = authenticate(username=email,password=password)
-        try:
-            if user.is_staff:
-                
-                messages.error(request,"Incorrect username or Password")
-                return redirect('staffloginpage')
-        except:
-            pass
-        
-        if user is not None:
+        user = authenticate(username=username,password=password)
+
+        if user:
             login(request,user)
             messages.success(request,"successful logged in")
             print("Login successfull")
             return redirect('homepage')
+
         else:
-            messages.warning(request,"Incorrect username or password")
-            return redirect('userloginpage')
+            messages.error(request,"Incorrect username or Password")
+            return redirect('staffloginpage')
+
+        
+        # if user is not None:
+        #     login(request,user)
+        #     messages.success(request,"successful logged in")
+        #     print("Login successfull")
+        #     return redirect('homepage')
+        # else:
+        #     messages.warning(request,"Incorrect username or password")
+        #     return redirect('userloginpage')
 
     response = render(request,'user/userlogsign.html')
     return HttpResponse(response)

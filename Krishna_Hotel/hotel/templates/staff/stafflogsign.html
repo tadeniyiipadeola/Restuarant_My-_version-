@@ -69,7 +69,19 @@
                                     <div class="col-md-12 col-lg-12 col-xlg-12">
 
                                         <form action="/staff/signup" method="POST">
-                                            {%csrf_token%}
+                                            <div class="form-group">
+                                                {%csrf_token%}
+                                                <label for="firstname">First name:</label>
+                                                <input type="text" class="form-control " id="firstname" placeholder="Firstname" name="firstname">
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="lastname">Last name:</label>
+                                                <input type="text" class="form-control " id="lastname" placeholder="Lastname" name="lastname">
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="email">Email:</label>
+                                                <input type="text" class="form-control " id="email" placeholder="Email" name="email">
+                                            </div>
                                             <div class="form-group">
                                                 <label for="username">Username:</label>
                                                 <input type="text" class="form-control " id="username" placeholder="Username" name="username">

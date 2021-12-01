@@ -37,8 +37,10 @@ class MyAccountManager(BaseUserManager):
         return user
 
 class Account(AbstractBaseUser, PermissionsMixin):
+    fname = models.CharField(max_length=15)
+    lname = models.CharField(max_length=25)
     email = models.EmailField(verbose_name="email", max_length=60, unique=True)
-    username = models.CharField(max_length=30, unique=True, primary_key=True)
+    username = models.CharField(verbose_name="username", max_length=30, unique=True, primary_key=True)
     # password = models.CharField(max_length=30, unique=True)
     date_joined = models.DateTimeField(verbose_name="date joined", auto_now_add=True)
     last_login = models.DateTimeField(verbose_name="last login", auto_now=True)
@@ -109,6 +111,6 @@ class Reservation(models.Model):
     
 
     def __str__(self):
-        return self.guest.username
+        return self.user.username
 
 
