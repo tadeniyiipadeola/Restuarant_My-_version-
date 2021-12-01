@@ -247,6 +247,34 @@ def book_room_page(request):
     room = Rooms.objects.all().get(id=int(request.GET['roomid']))
     return HttpResponse(render(request,'user/bookroom.html',{'room':room}))
 
+
+def Guestreservation(request):
+    # if request.method == "POST":
+    #     Name = request.POST['Name']
+
+    #     phone = request.POST['phone']
+    #     email = request.POST['email']
+    #     partysize = int(request.POST['party'])
+    #     arrival = request.POST['arrival']
+
+    #     #payment
+    #     card_no= request.POST['card_no']
+    #     expiration = request.POST['expiration'] 
+    #     cvc_no = request.POST['cvc']
+    #     if partysize > 6:
+    #         reservation_fee =+ 5
+
+    #     applicant_data = Reservation(
+    #         Client_name=Name, phone=phone, email=email, partysize= partysize, 
+    #         arrival=arrival,card_no=card_no,expiration=expiration, cvc_no=cvc_no, reservation_fee=reservation_fee
+    #     )
+    #     applicant_data.save()
+    #     print("it worked")
+    #     return HttpResponse ("Data Saved Good Job")
+    # else:
+    #     return render(request, 'user')
+    return render(request, 'Guest.html' )
+
 #For booking the room
 @login_required(login_url='/user')
 def book_room(request):

@@ -8,7 +8,7 @@
                 {%csrf_token%}
                 {%load app_tags%}
                 <div class="form-group">
-                    <label for="username">Hotel:</label>
+                    <label for="username">Resturant Name:</label>
                     <input type="text" class="form-control " id="hotel" name="hotel" disabled value={{room.hotel.name}}>
                 </div>
                 <div class="form-group">
@@ -25,11 +25,15 @@
                 </div>
                 <div class="form-group">
                     <label for="password2">Check-in:</label>
-                    <input type="date" class="form-control " id="cin" min={%todays_date%} max={% max_date %} placeholder="check in " name="check_in" required="True">
+                    <input type="date" class="form-control " id="cin" min={%todays_date%} max={% max_date %} placeholder="check in "  required="False">
+                </div>
+                <div class="form-group ">
+                    <label for="date">arrival</label>
+                    <input id="date" class="form-control" placeholder="Date &amp; Time" type="datetime-local"  required="True">
                 </div>
                 <div class="form-group">
-                    <label for="password2">Check-Out:</label>
-                    <input type="date" class="form-control " id="cout" min={%tommorow%} max={% max_date%} placeholder="check out " name="check_out" required="True">
+                    <label for="password2">Payment Charge Date</label>
+                    <input type="date" class="form-control " id="cout" min={%tommorow%} max={% max_date%} placeholder="check out " name="check_out" required="False">
                 </div>
                 <div class="form-group">
                     <label for="username">Room Type:</label>
