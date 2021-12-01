@@ -3,8 +3,9 @@ from django.http import HttpResponse , HttpResponseRedirect
 from .models import Hotels,Rooms,Reservation
 from django.contrib import messages
 from django.contrib.auth import authenticate,login,logout
-from django.contrib.auth.models import User
+# from django.contrib.auth.models import Group
 from django.contrib.auth.decorators import login_required
+from .models import *
 import datetime
 # Create your views here.
 
@@ -54,7 +55,11 @@ def contactpage(request):
 #user sign up
 def user_sign_up(request):
     if request.method =="POST":
-        user_name = request.POST['username']
+        first_name = request.POST['first_name']
+        last_name = request.POST['last_name']
+        username = request.POST['username']
+        email = request.POST['email']
+        phone = request.POST['phone']
         
         password1 = request.POST['password1']
         password2 = request.POST['password2']
@@ -64,17 +69,28 @@ def user_sign_up(request):
             return redirect('userloginpage')
         
         try:
-            if User.objects.all().get(username=user_name):
+            if Account.objects.all().get(username=username):
                 messages.warning(request,"Username Not Available")
                 return redirect('userloginpage')
         except:
             pass
             
+        account = Account()
+        account.fname = first_name
+        account.lname = last_name
+        account.username = username
+        account.email = email
+        account.password = password1
+        account.is_staff = True
+        account.save()
 
-        new_user = User.objects.create_user(username=user_name,password=password1)
-        new_user.is_superuser=False
-        new_user.is_staff=False
-        new_user.save()
+
+        # group, created = Group.objects.get_or_create(name="Members")
+        # group.user_set.add(account)
+        # new_user = User.objects.create_user(username=username,password=password1, first_name=first_name, last_name=last_name)
+        # new_user.is_superuser=False
+        # new_user.is_staff=False
+        # new_user.save()
         messages.success(request,"Registration Successfull")
         return redirect("userloginpage")
     return HttpResponse('Access Denied')
@@ -90,13 +106,13 @@ def staff_sign_up(request):
             messages.success(request,"Password didn't Matched")
             return redirect('staffloginpage')
         try:
-            if User.objects.all().get(username=user_name):
+            if Account.objects.all().get(username=user_name):
                 messages.warning(request,"Username Already Exist")
                 return redirect("staffloginpage")
         except:
             pass
         
-        new_user = User.objects.create_user(username=user_name,password=password1)
+        new_user = Account.objects.create_user(username=user_name,password=password1)
         new_user.is_superuser=False
         new_user.is_staff=True
         new_user.save()
@@ -274,7 +290,7 @@ def book_room(request):
         room_object = Rooms.objects.all().get(id=room_id)
         room_object.status = '2'
         
-        user_object = User.objects.all().get(username=current_user)
+        user_object = Account.objects.all().get(username=current_user)
 
         reservation.guest = user_object
         reservation.room = room_object
@@ -305,7 +321,7 @@ def view_room(request):
 def user_bookings(request):
     if request.user.is_authenticated == False:
         return redirect('userloginpage')
-    user = User.objects.all().get(id=request.user.id)
+    user = Account.objects.all().get(id=request.user.id)
     print(f"request user id ={request.user.id}")
     bookings = Reservation.objects.all().filter(guest=user)
     if not bookings:

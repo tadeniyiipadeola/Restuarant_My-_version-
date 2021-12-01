@@ -1,0 +1,70 @@
+{% extends 'basic.html' %} {% block title %}Guest {% endblock title %} {% block body %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
+	<link rel="shortcut icon" href="favicon.ico">
+
+	<link href="https://fonts.googleapis.com/css?family=Playfair+Display:400,700,400italic,700italic|Merriweather:300,400italic,300italic,400,700italic" rel="stylesheet" type="text/css">
+	
+	<!-- Animate.css -->
+	<link rel="stylesheet" href="{% static 'css/animate.css' %}">
+	<!-- Icomoon Icon Fonts-->
+	<link rel="stylesheet" href="{% static 'css/icomoon.css' %}">
+	<!-- Simple Line Icons -->
+	<link rel="stylesheet" href="{% static 'css/simple-line-icons.css' %}">
+	<!-- Datetimepicker -->
+	<link rel="stylesheet" href="{% static 'css/bootstrap-datetimepicker.min.css' %}">
+	<!-- Flexslider -->
+	<link rel="stylesheet" href="{% static 'css/flexslider.css' %}">
+	<!-- Bootstrap  -->
+	<link rel="stylesheet" href="{% static 'css/bootstrap.css' %}">
+
+	<link rel="stylesheet" href="{% static 'css/style.css' %}">
+
+
+	<!-- Modernizr JS -->
+	<script src="js/modernizr-2.6.2.min.js"></script>
+    <title>Document</title>
+</head>
+<body>
+    
+    <div class="col-md-6 to-animate-2 fadeInUp animated"><grammarly-extension data-grammarly-shadow-root="true" style="position: absolute; top: 0px; left: 0px; pointer-events: none;" class="cGcvT"></grammarly-extension><grammarly-extension data-grammarly-shadow-root="true" style="mix-blend-mode: darken; position: absolute; top: 0px; left: 0px; pointer-events: none;" class="cGcvT"></grammarly-extension>
+        <h3>Reservation Form</h3>
+        <div class="form-group ">
+            <label for="name" class="sr-only">Name</label>
+            <input id="name" class="form-control" placeholder="Name" type="text">
+        </div>
+        <div class="form-group ">
+            <label for="email" class="sr-only">Email</label>
+            <input id="email" class="form-control" placeholder="Email" type="email">
+        </div>
+        <div class="form-group">
+            <label for="occation" class="sr-only">Occation</label>
+            <select class="form-control" id="occation">
+                <option>Select an Occation</option>
+              <option>Wedding Ceremony</option>
+              <option>Birthday</option>
+              <option>Others</option>
+            </select>
+        </div>
+        <div class="form-group ">
+            <label for="date" class="sr-only">Date</label>
+            <input id="date" class="form-control" placeholder="Date &amp; Time" type="text">
+        </div>
+
+
+            
+        <div class="form-group ">
+            <label for="message" class="sr-only">Message</label>
+            <textarea name="" id="message" cols="30" rows="5" class="form-control" placeholder="Message" spellcheck="false"></textarea>
+        </div>
+        <div class="form-group ">
+            <input class="btn btn-primary" value="Send Message" type="submit">
+        </div>
+        </div>
+</body>
+</html>
