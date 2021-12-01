@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Hotels,Rooms,Reservation
+from .models import Resturants,Tables,Reservation
 from django.contrib.auth.admin import UserAdmin
 # Register your models here.
 
@@ -20,6 +20,6 @@ class AccountAdmin(UserAdmin):
     fieldsets = ()
 
 
-admin.site.register(Hotels)
-admin.site.register(Rooms)
+admin.site.register(Resturants)
+admin.site.register(Tables)
 admin.site.register(Reservation)

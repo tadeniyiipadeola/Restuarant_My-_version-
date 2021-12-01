@@ -29,7 +29,7 @@ ALLOWED_HOSTS = ['*']
 
 JSIGNATURE_WIDTH = 500
 JSIGNATURE_HEIGHT = 200
-
+DATE_INPUT_FORMATS = ['%mm-%YY']
 # Application definition
 
 INSTALLED_APPS = [
@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'krishna',
     'mathfilters',
+    'creditcards',
 ]
 
 MIDDLEWARE = [
@@ -73,6 +74,10 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'hotel.wsgi.application'
 AUTH_USER_MODEL = 'krishna.Account'
+AUTHENTICATION_BACKENDS = (
+    # 'django.contrib.auth.backends.AllowAllUsersModelBackend',
+    'accounts.backends.CustomAuth',
+)
 
 
 # Database

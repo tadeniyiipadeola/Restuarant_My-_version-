@@ -209,7 +209,7 @@
 
 <table class="table table-striped  ">
     <thead>
-        <th>Room Number</th>
+        <th>Table Number</th>
         <th>Type</th>
         <th>Status</th>
         <th>Price</th>
@@ -304,7 +304,7 @@
 
             <!-- Modal Header -->
             <div class="modal-header">
-                <h4 class="modal-title">Add New Room</h4>
+                <h4 class="modal-title">Add New Table</h4>
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
             </div>
 
@@ -319,12 +319,12 @@
                                 {% csrf_token %}
 
                                 <div class="form-group">
-                                    <label for="email">Room Type:</label>
+                                    <label for="email">Table Type:</label>
                                     <select class="form-control" name="roomtype" id="roomtype">
                                         
-                                        <option value="1">Premium</option>
-                                        <option value="2">Deluxe</option>
-                                        <option value="3">Basic</option>
+                                        <option value="1">Couple</option>
+                                        <option value="2">Medium</option>
+                                        <option value="3">Large</option>
                                     </select>
                                 </div>
                                 <div class="form-group">
@@ -359,7 +359,7 @@
                                         
                                     </select>
                                 </div>
-                                <button type="submit" class="btn btn-primary">Add Room</button>
+                                <button type="submit" class="btn btn-primary">Add Table</button>
                             </form>
                         </div>
                     </div>

@@ -1,5 +1,6 @@
+# from typing_extensions import Required
 from django.db import models
-
+# from django.creditcards.models import CardNumberField, CardExpiryField, SecurityCodeField
 from django.contrib.auth.models import (
     AbstractBaseUser,
     BaseUserManager,
@@ -64,50 +65,63 @@ class Account(AbstractBaseUser, PermissionsMixin):
         return True
 
 
-class Hotels(models.Model):
+class Resturants(models.Model):
     #h_id,h_name,owner ,location,rooms
-    name = models.CharField(max_length=30,default="krishna")
+    name = models.CharField(max_length=30,default="French Peran")
     owner = models.CharField(max_length=20)
     location = models.CharField(max_length=50)
-    state = models.CharField(max_length=50,default="maharashtra")
-    country = models.CharField(max_length=50,default="india")
+    state = models.CharField(max_length=50,default="Texas")
+    country = models.CharField(max_length=50,default="USA")
     def __str__(self):
         return self.name
 
 
-class Rooms(models.Model):
-    ROOM_STATUS = ( 
+class Tables(models.Model):
+    Table_STATUS = ( 
     ("1", "available"), 
     ("2", "not available"),    
     ) 
 
-    ROOM_TYPE = ( 
+    Table_TYPE = ( 
     ("1", "Large Table"), 
     ("2", "Medium Table"),
     ("3","Couple Tables"),    
     ) 
 
     #type,no_of_rooms,capacity,prices,Hotel
-    room_type = models.CharField(max_length=50,choices = ROOM_TYPE)
+    table_type = models.CharField(max_length=50,choices = Table_TYPE)
     capacity = models.IntegerField()
     price = models.IntegerField()
     size = models.IntegerField()
-    hotel = models.ForeignKey(Hotels, on_delete = models.CASCADE)
-    status = models.CharField(choices =ROOM_STATUS,max_length = 15)
-    roomnumber = models.IntegerField()
+    Resturants = models.ForeignKey(Resturants, on_delete = models.CASCADE)
+    status = models.CharField(choices =Table_STATUS,max_length = 15)
+    table_number = models.IntegerField(auto_created=True)
     def __str__(self):
-        return self.hotel.name
+        return self.Resturants.name
 
+
+# class Payment(models.Model):
+#     cc_number = CardNumberField(_('card number'))
+#     cc_expiry = CardExpiryField(_('expiration date'))
+#     cc_code = SecurityCodeField(_('security code'))
+    
 class Reservation(models.Model):
-    fname = models.CharField(max_length=15)
-    lname = models.CharField(max_length=25)
+    name = models.CharField(max_length=50)
+    # lname = models.CharField(max_length=25)
     phone = models.CharField(max_length=10, null=False)
+    email = models.EmailField(verbose_name="email", max_length=60, unique=True)
+    partysize = models.IntegerField()
     date_joined = models.DateTimeField(auto_now=True)
-    check_in = models.DateField(auto_now =False)
-    check_out = models.DateField()
-    room = models.ForeignKey(Rooms, on_delete = models.CASCADE)
-    user = models.ForeignKey(Account,  primary_key=True,
-        default=None, on_delete= models.CASCADE)
+    arrival = models.DateTimeField()
+    reservation_fee = models.IntegerField(default=10)
+    # check_out = models.DateField()
+    card_no = models.IntegerField(max_length=16 )
+    expiration = models.CharField(max_length=6  )
+    cvc = models.IntegerField(max_length=3)
+
+    Table = models.ForeignKey(Tables, on_delete = models.CASCADE)
+    members =models.BooleanField(default=False)
+    user = models.ForeignKey(Account,  primary_key=True, default=None, on_delete= models.CASCADE)
     
 
     def __str__(self):

@@ -1,33 +1,35 @@
 from django.shortcuts import render ,redirect
 from django.http import HttpResponse , HttpResponseRedirect
-from .models import Hotels,Rooms,Reservation
+from .models import Resturants,Tables,Reservation
 from django.contrib import messages
 from django.contrib.auth import authenticate,login,logout
 # from django.contrib.auth.models import Group
 from django.contrib.auth.decorators import login_required
 from .models import *
 import datetime
+from .decorators import *
+from .backends import *
 # Create your views here.
 
 #homepage
 def homepage(request):
-    all_location = Hotels.objects.values_list('location','id').distinct().order_by()
+    all_location = Resturants.objects.values_list('location','id').distinct().order_by()
     if request.method =="POST":
         try:
             print(request.POST)
-            hotel = Hotels.objects.all().get(id=int(request.POST['search_location']))
+            hotel = Resturants.objects.all().get(id=int(request.POST['search_location']))
             rr = []
             
             #for finding the reserved rooms on this time period for excluding from the query set
-            for each_reservation in Reservation.objects.all():
-                if str(each_reservation.check_in) < str(request.POST['cin']) and str(each_reservation.check_out) < str(request.POST['cout']):
-                    pass
-                elif str(each_reservation.check_in) > str(request.POST['cin']) and str(each_reservation.check_out) > str(request.POST['cout']):
-                    pass
-                else:
-                    rr.append(each_reservation.room.id)
+            # for each_reservation in Reservation.objects.all():
+            #     if str(each_reservation.check_in) < str(request.POST['cin']) and str(each_reservation.check_out) < str(request.POST['cout']):
+            #         pass
+            #     elif str(each_reservation.check_in) > str(request.POST['cin']) and str(each_reservation.check_out) > str(request.POST['cout']):
+            #         pass
+            #     else:
+            #         rr.append(each_reservation.room.id)
                 
-            room = Rooms.objects.all().filter(hotel=hotel,capacity__gte = int(request.POST['capacity'])).exclude(id__in=rr)
+            room = Tables.objects.all().filter(hotel=hotel,capacity__gte = int(request.POST['capacity'])).exclude(id__in=rr)
             if len(room) == 0:
                 messages.warning(request,"Sorry No Rooms Are Available on this time period")
             data = {'rooms':room,'all_location':all_location,'flag':True}
@@ -84,15 +86,11 @@ def user_sign_up(request):
         account.save()
 
 
-        # group, created = Group.objects.get_or_create(name="Members")
-        # group.user_set.add(account)
-        # new_user = User.objects.create_user(username=username,password=password1, first_name=first_name, last_name=last_name)
-        # new_user.is_superuser=False
-        # new_user.is_staff=False
-        # new_user.save()
+        user = authenticate(username=username, password=password1)
         messages.success(request,"Registration Successfull")
+        login(request, user)
         return redirect("userloginpage")
-    return HttpResponse('Access Denied')
+    return render(request= 'homepage')
 #staff sign up
 def staff_sign_up(request):
     if request.user.is_authenticated and request.user.is_staff:
@@ -123,39 +121,86 @@ def staff_sign_up(request):
 
         return HttpResponse('Access Denied')
 #user login and signup page
+@unauthenticated_user
 def user_log_sign_page(request):
     user = request.user
     if user.is_authenticated:
         return redirect("viewApp")
 
+
     if request.method == 'POST':
         username = request.POST['username']
-        password = request.POST['pswd']
-
-        user = authenticate(username=username,password=password)
-
+        password = request.POST['password']
+        print(username)
+        print(password)
+        user = authenticate(username=username, password=password)
+        print(user)
         if user:
-            login(request,user)
+            login(request, user)
             messages.success(request,"successful logged in")
             print("Login successfull")
             return redirect('homepage')
-
         else:
             messages.error(request,"Incorrect username or Password")
-            return redirect('staffloginpage')
-
-        
-        # if user is not None:
-        #     login(request,user)
-        #     messages.success(request,"successful logged in")
-        #     print("Login successfull")
-        #     return redirect('homepage')
-        # else:
-        #     messages.warning(request,"Incorrect username or password")
-        #     return redirect('userloginpage')
+            return redirect('userloginpage')
 
     response = render(request,'user/userlogsign.html')
     return HttpResponse(response)
+
+def Guestreservation(request):
+    if request.method == "POST":
+        Name = request.POST['Name']
+
+        phone = request.POST['phone']
+        email = request.POST['email']
+        partysize = int(request.POST['party'])
+        arrival = request.POST['arrival']
+
+        #payment
+        card_no= request.POST['card_no']
+        expiration = request.POST['expiration'] 
+        cvc_no = request.POST['cvc']
+        if partysize > 6:
+            reservation_fee =+ 5
+
+        applicant_data = Reservation(
+            Client_name=Name, phone=phone, email=email, partysize= partysize, 
+            arrival=arrival,card_no=card_no,expiration=expiration, cvc_no=cvc_no, reservation_fee=reservation_fee
+        )
+        applicant_data.save()
+        print("it worked")
+        return HttpResponse ("Data Saved Good Job")
+    else:
+        return render(request, 'user')
+    return render(request, 'Guest.html' )
+
+@login_required(login_url='/user')
+def userReservation(request):
+
+    if request.method == 'POST':
+
+        Name = request.POST['Name']
+        phone = request.POST['phone']
+        email = request.POST['email']
+        partysize = int(request.POST['party'])
+        arrival = request.POST['arrival']
+
+        #payment
+        card_no= request.POST['card_no']
+        expiration = request.POST['expiration'] 
+        cvc_no = request.POST['cvc']
+        if partysize > 6:
+            reservation_fee =+ 5
+
+        applicant_data = Reservation(
+            Client_name=Name, phone=phone, email=email, partysize= partysize, 
+            arrival=arrival,card_no=card_no,expiration=expiration, cvc_no=cvc_no, reservation_fee=reservation_fee
+        )
+        applicant_data.save()
+        print("it worked")
+        return HttpResponse ("Data Saved Good Job")
+    else:
+        return render(request, 'user')
 
 #logout for admin and user 
 def logoutuser(request):
@@ -193,13 +238,13 @@ def panel(request):
     if request.user.is_staff == False:
         return HttpResponse('Access Denied')
     
-    rooms = Rooms.objects.all()
+    rooms = Tables.objects.all()
     total_rooms = len(rooms)
-    available_rooms = len(Rooms.objects.all().filter(status='1'))
-    unavailable_rooms = len(Rooms.objects.all().filter(status='2'))
+    available_rooms = len(Tables.objects.all().filter(status='1'))
+    unavailable_rooms = len(Tables.objects.all().filter(status='2'))
     reserved = len(Reservation.objects.all())
 
-    hotel = Hotels.objects.values_list('location','id').distinct().order_by()
+    hotel = Resturants.objects.values_list('location','id').distinct().order_by()
 
     response = render(request,'staff/panel.html',{'location':hotel,'reserved':reserved,'rooms':rooms,'total_rooms':total_rooms,'available':available_rooms,'unavailable':unavailable_rooms})
     return HttpResponse(response)
@@ -211,8 +256,8 @@ def edit_room(request):
         return HttpResponse('Access Denied')
     if request.method == 'POST' and request.user.is_staff:
         print(request.POST)
-        old_room = Rooms.objects.all().get(id= int(request.POST['roomid']))
-        hotel = Hotels.objects.all().get(id=int(request.POST['hotel']))
+        old_room = Tables.objects.all().get(id= int(request.POST['roomid']))
+        hotel = Resturants.objects.all().get(id=int(request.POST['hotel']))
         old_room.room_type  = request.POST['roomtype']
         old_room.capacity   =int(request.POST['capacity'])
         old_room.price      = int(request.POST['price'])
@@ -227,7 +272,7 @@ def edit_room(request):
     else:
     
         room_id = request.GET['roomid']
-        room = Rooms.objects.all().get(id=room_id)
+        room = Tables.objects.all().get(id=room_id)
         response = render(request,'staff/editroom.html',{'room':room})
         return HttpResponse(response)
 
@@ -245,9 +290,9 @@ def add_new_room(request):
     if request.user.is_staff == False:
         return HttpResponse('Access Denied')
     if request.method == "POST":
-        total_rooms = len(Rooms.objects.all())
-        new_room = Rooms()
-        hotel = Hotels.objects.all().get(id = int(request.POST['hotel']))
+        total_rooms = len(Tables.objects.all())
+        new_room = Tables()
+        hotel = Resturants.objects.all().get(id = int(request.POST['hotel']))
         print(f"id={hotel.id}")
         print(f"name={hotel.name}")
 
@@ -269,7 +314,7 @@ def add_new_room(request):
 #booking room page
 @login_required(login_url='/user')
 def book_room_page(request):
-    room = Rooms.objects.all().get(id=int(request.GET['roomid']))
+    room = Tables.objects.all().get(id=int(request.GET['roomid']))
     return HttpResponse(render(request,'user/bookroom.html',{'room':room}))
 
 #For booking the room
@@ -280,7 +325,7 @@ def book_room(request):
 
         room_id = request.POST['room_id']
         
-        room = Rooms.objects.all().get(id=room_id)
+        room = Tables.objects.all().get(id=room_id)
         #for finding the reserved rooms on this time period for excluding from the query set
         for each_reservation in Reservation.objects.all().filter(room = room):
             if str(each_reservation.check_in) < str(request.POST['check_in']) and str(each_reservation.check_out) < str(request.POST['check_out']):
@@ -296,7 +341,7 @@ def book_room(request):
         booking_id = str(room_id) + str(datetime.datetime.now())
 
         reservation = Reservation()
-        room_object = Rooms.objects.all().get(id=room_id)
+        room_object = Tables.objects.all().get(id=room_id)
         room_object.status = '2'
         
         user_object = Account.objects.all().get(username=current_user)
@@ -321,7 +366,7 @@ def handler404(request):
 @login_required(login_url='/staff')   
 def view_room(request):
     room_id = request.GET['roomid']
-    room = Rooms.objects.all().get(id=room_id)
+    room = Tables.objects.all().get(id=room_id)
 
     reservation = Reservation.objects.all().filter(room=room)
     return HttpResponse(render(request,'staff/viewroom.html',{'room':room,'reservations':reservation}))
@@ -345,12 +390,12 @@ def add_new_location(request):
         state = request.POST['new_state']
         country = request.POST['new_country']
         
-        hotels = Hotels.objects.all().filter(location = location , state = state)
+        hotels = Tables.objects.all().filter(location = location , state = state)
         if hotels:
             messages.warning(request,"Sorry City at this Location already exist")
             return redirect("staffpanel")
         else:
-            new_hotel = Hotels()
+            new_hotel = Resturants()
             new_hotel.owner = owner
             new_hotel.location = location
             new_hotel.state = state
